@@ -2,7 +2,6 @@ import express from 'express';
 import { router } from './router.js';
 import * as dotenv from 'dotenv';
 dotenv.config();
-console.log(process.env.PORT)
 
 class Server {
     constructor() {
