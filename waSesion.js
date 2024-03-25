@@ -1,7 +1,6 @@
 import pkg from 'whatsapp-web.js';
 const { LocalAuth,Client } = pkg;
 
-
 //const Phone=require('./phone');
 import fsExtra from 'fs-extra'
 
