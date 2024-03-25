@@ -25,7 +25,7 @@ class Instances{
                 this.qrqty++;
                 if(primera){
                     primera=false;
-                    resolve(true);
+                    
                 }
             });
             this.client.on('authenticated',async()=>{
@@ -50,7 +50,8 @@ class Instances{
             this.client.on('message', message => {
                 //console.log("+"+message.from.split("@")[0],message.body);
             });
-            await this.client.initialize()
+            await this.client.initialize();
+            resolve(true);
         });
     }
 
