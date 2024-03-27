@@ -12,7 +12,7 @@ const InitWA=async()=>{
         eliminarCarpeta('/.wwebjs_auth/session-'+i)
         const wsp=new Wsp();
         wsp.createInstance(i);
-        await wait(2000);
+        await wait(60000);
     }
 }
 
