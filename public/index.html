@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="qr-code-styling.js"></script>
     <style>
         select,input{
             border:1px solid #666666;
@@ -21,20 +22,37 @@
         option{
             background-color: #585050;
         }
+        .contenedor{
+            width: 80vw;
+            text-align: center;
+            margin-left: 10vw;
+        }
+        .qr_div{
+            width: 260px;
+            height: 260px;
+            float: left;
+            color: #FFF;
+            font-family: 'Courier New', Courier, monospace;
+        }
     </style>
 </head>
 <body style="background-color: rgb(55, 55, 55);">
-      <input type="text" value="1" id="nro">
-      <select id="unidad">
-        <option value="4">Minutes</option>
-        <option value="240" selected>Hours</option>
-        <option value="5760">Days</option>
-      </select>
-      <button onclick="crearGrafico()">
-        Actualizar
-      </button>
-      <div id="chart">
-        
+      <div class="contenedor">
+        <input type="text" value="1" id="nro">
+        <select id="unidad">
+            <option value="4">Minutes</option>
+            <option value="240" selected>Hours</option>
+            <option value="5760">Days</option>
+        </select>
+        <button onclick="crearGrafico()">
+            Actualizar
+        </button>
+        <div id="chart">
+        </div>
+        <hr>
+        <div id="qr">
+            
+        </div>
       </div>
       
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -68,7 +86,7 @@
         {   $("#chart").html(`<canvas id="myChart"></canvas>`)
             qty=$("#nro").val()*$("#unidad").val()
             var settings = {
-            "url": "/api",
+            "url": "/api/control/cpu",
             "method": "POST",
             "timeout": 0,
             "headers": {
@@ -101,6 +119,62 @@
             return suma / array.length;
         }
 
+        status();
+        function status()
+        {   var settings = {
+            "url": "/api/instances/info",
+            "method": "POST",
+            "timeout": 0,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "data": JSON.stringify({
+                
+            }),
+            };
+
+            $.ajax(settings).done(function (response) {
+                const data=response.info;
+                console.log(data);
+                data.forEach((e,i)=> {
+                    $("#qr").append(`<div class="qr_div" id="qr_${i}"><p style='margin:0px'>Instancia ${i}</p></div>`)
+                    if(e.qr!=""){
+                    printQr(e.qr,`qr_${i}`)
+                    }else{
+                    $("#qr_"+i).append("Status: ", e.session)        
+                    }
+                });
+            });
+        }
+
+        function printQr(txt,div){
+            const qrCode = new QRCodeStyling({
+                width: 260,
+                height: 260,
+                type: "svg",
+                data: txt,
+                image: "https://static.vecteezy.com/system/resources/previews/012/162/809/non_2x/whatsapp-logo-3d-render-free-png.png",
+                dotsOptions: {
+                    color: "#19BD3F",
+                    type: "rounded"
+                },
+                backgroundOptions: {
+                    color: "rgb(55, 55, 55)",
+                },
+                imageOptions: {
+                    crossOrigin: "anonymous",
+                    margin: 0
+                }
+            });
+            qrCode.append(document.getElementById(div));
+        }
+
       </script>
 </body>
 </html>
+
+
+
+
+
+    

@@ -1,4 +1,4 @@
-import { Wsp } from "./waSesion.js";
+import { Wsp } from "../../waSesion.js";
 
 
 const sendMessage=async(req,res)=>{
