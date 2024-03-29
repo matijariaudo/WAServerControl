@@ -141,7 +141,7 @@
                     if(e.qr!=""){
                     printQr(e.qr,`qr_${i}`)
                     }else{
-                    $("#qr_"+i).append("Status: ", e.session)        
+                    $("#qr_"+i).append(`Status: ${e.session}<br>Numero:${e.phone.user || ' - '}`)        
                     }
                 });
             });
