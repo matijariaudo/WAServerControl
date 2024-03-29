@@ -32,7 +32,8 @@ router.post('/', (req, res) => {
 
         // Responder con el contenido del archivo
         const lineas1 = content.split('\n');
-        const lineas=lineas1.reverse().slice(0,qty*4);
+        const size=lineas1.length
+        const lineas=lineas1.slice(size-qty*4,size);
         
         // Define una función para crear objetos a partir de una línea
         const crearObjeto = (linea) => {
