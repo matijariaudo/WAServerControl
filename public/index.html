@@ -1,0 +1,75 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body style="background-color: rgb(55, 55, 55);">
+    <div>
+        <canvas id="myChart"></canvas>
+      </div>
+      
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+      <script>
+        function graficar(fechas,valores) {
+        const ctx = document.getElementById('myChart');
+        new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: fechas,
+            datasets: [{
+            label: 'Valor',
+            data: valores,
+            borderColor: 'rgb(65, 236, 179)',
+            tension: 0.26,
+            fill: false
+            }]
+        },
+        options: {
+            scales:{
+            y:{
+                min: 0,
+                max:120
+            }}
+        }
+        });
+        }
+
+        var settings = {
+        "url": "/api",
+        "method": "POST",
+        "timeout": 0,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "data": JSON.stringify({
+            qty:240
+        }),
+        };
+
+        $.ajax(settings).done(function (response) {
+            const data=response.resultado;
+            console.log(data);
+            const fechas=data.map(a=>a.fecha);
+            const valores=data.map(a=>calcularPromedio(a.datos))
+            graficar(fechas,valores)
+        });
+
+        function calcularPromedio(array) {
+            // Verifica si el array está vacío
+            if (array.length === 0) {
+                return 0;
+            }
+
+            // Suma todos los valores de la propiedad 'value'
+            const suma = array.reduce((total, objeto) => total + objeto.cpu, 0);
+
+            // Calcula el promedio dividiendo la suma total por el número de elementos en el array
+            return suma / array.length;
+        }
+
+      </script>
+</body>
+</html>

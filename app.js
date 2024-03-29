@@ -3,4 +3,4 @@ import { InitWA } from './WAAdmin.js';
 
 const server=new Server();
 server.listen();
-InitWA()
+//InitWA()

@@ -9,7 +9,7 @@ dotenv.config()
 const InitWA=async()=>{
     const qty=process.env.QTY_INSTANCE || 3;
     for (let i = 0; i < qty; i++) {
-        eliminarCarpeta('/.wwebjs_auth/session-'+i)
+        //eliminarCarpeta('/.wwebjs_auth/session-'+i)
         const wsp=new Wsp();
         wsp.createInstance(i);
         await wait(process.env.TIMEBTW || 30000);

@@ -1,11 +1,14 @@
 import express from 'express';
 import { router } from './router.js';
 import * as dotenv from 'dotenv';
+import path from 'path';
+const __dirname = path.resolve();
 dotenv.config();
 
 class Server {
     constructor() {
         this.app = express();
+        this.app.use(express.static(path.join(__dirname, "public")));
         this.app.use(express.json());
         // Configurar los encabezados CORS
         this.app.use((req, res, next) => {
@@ -15,7 +18,7 @@ class Server {
             next();
         });
         this.app.use('/api', router);
-
+        this.app.use(express.static('public'));
     }
 
     async listen() {
