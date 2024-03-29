@@ -31,7 +31,8 @@ router.post('/', (req, res) => {
         const content = fs.readFileSync(filePath, 'utf-8');
 
         // Responder con el contenido del archivo
-        const lineas = content.split('\n').slice(0,qty*4);
+        const lineas1 = content.split('\n');
+        const lineas=lineas1.reverse().slice(0,qty*4);
         
         // Define una función para crear objetos a partir de una línea
         const crearObjeto = (linea) => {
