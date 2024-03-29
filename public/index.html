@@ -4,10 +4,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        select,input{
+            border:1px solid #666666;
+            background-color: rgb(255, 255, 255,.02);
+            border-radius: 10px;
+            padding: 7px 10px;
+            color: #FFF;
+        }
+        button{
+            background-color: #41ecb3;
+            padding: 8px 10px;
+            border: 0px;
+            border-radius: 10px;
+        }
+        option{
+            background-color: #585050;
+        }
+    </style>
 </head>
 <body style="background-color: rgb(55, 55, 55);">
-    <div>
-        <canvas id="myChart"></canvas>
+      <input type="text" value="1" id="nro">
+      <select id="unidad">
+        <option value="4">Minutes</option>
+        <option value="240" selected>Hours</option>
+        <option value="5760">Days</option>
+      </select>
+      <button onclick="crearGrafico()">
+        Actualizar
+      </button>
+      <div id="chart">
+        
       </div>
       
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -36,26 +63,30 @@
         }
         });
         }
+        crearGrafico()
+        function crearGrafico()
+        {   $("#chart").html(`<canvas id="myChart"></canvas>`)
+            qty=$("#nro").val()*$("#unidad").val()
+            var settings = {
+            "url": "/api",
+            "method": "POST",
+            "timeout": 0,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "data": JSON.stringify({
+                qty
+            }),
+            };
 
-        var settings = {
-        "url": "/api",
-        "method": "POST",
-        "timeout": 0,
-        "headers": {
-            "Content-Type": "application/json"
-        },
-        "data": JSON.stringify({
-            qty:240
-        }),
-        };
-
-        $.ajax(settings).done(function (response) {
-            const data=response.resultado;
-            console.log(data);
-            const fechas=data.map(a=>a.fecha);
-            const valores=data.map(a=>calcularPromedio(a.datos))
-            graficar(fechas,valores)
-        });
+            $.ajax(settings).done(function (response) {
+                const data=response.resultado;
+                console.log(data);
+                const fechas=data.map(a=>a.fecha);
+                const valores=data.map(a=>calcularPromedio(a.datos))
+                graficar(fechas,valores)
+            });
+        }
 
         function calcularPromedio(array) {
             // Verifica si el array está vacío
