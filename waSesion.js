@@ -27,6 +27,7 @@ class Instances{
                     primera=false;
                     
                 }
+                resolve(true);
             });
             this.client.on('authenticated',async()=>{
                 console.log("Auth: ",this.id)
@@ -56,15 +57,40 @@ class Instances{
     }
 
     async destroyInstance(){
-        this.session="disconnect";
-        this.qr="";
+        console.log("eliminar instancia")
         if(this.session=='connect'){
             await this.client.logout();
         }
-        await this.client.destroy();
-        console.log("eliminar instancia")
+        if(this.session=='connect' || this.session=='pending'){
+            await this.client.destroy();
+            this.session="disconnect";
+            this.qr="";
+            const wsp=new Wsp();
+            await wsp.deleteIntance(this.id);
+            return true;
+        }
+        return false;
+    }
+
+    async forceDestroyInstance(){
+        //await this.client.destroy();
+        this.session="disconnect";
+        this.qr="";
         const wsp=new Wsp();
         await wsp.deleteIntance(this.id);
+        return true;
+    }
+
+    async stopInstance(){
+        if(this.session=='connect' || this.session=='pending'){
+            await this.client.destroy();
+            const wsp=new Wsp();
+            await wsp.deleteIntance(this.id,false);
+            this.session="disconnect";
+            this.qr="";
+            return true;
+        }
+        return false;
     }
 
     async getProp(){
@@ -136,7 +162,9 @@ class Wsp {
       if (!this.instancias[id]) {
         console.log("New instance ",id)
         this.instancias[id] =new Instances(id);
-        await this.instancias[id].init()
+        console.log("Se envio a")
+        const envio=await this.instancias[id].init()
+        console.log("Se envio", envio)
       }
       return this.instancias[id];
     }
@@ -147,9 +175,13 @@ class Wsp {
         return this.instancias[id];
     }
 
-    async deleteIntance(id){
+    async deleteIntance(id,deleteCookies=true){
         delete this.instancias[id]
-        fsExtra.remove('./.wwebjs_auth/session-'+id);
+        if(deleteCookies){
+            console.log("Delete instance data: ",id)
+            fsExtra.remove('./.wwebjs_auth/session-'+id);
+        }
+        console.log("Deleted instance: ",id)
     }
 
     async getInfo(){
