@@ -72,15 +72,6 @@ class Instances{
         return false;
     }
 
-    async forceDestroyInstance(){
-        //await this.client.destroy();
-        this.session="disconnect";
-        this.qr="";
-        const wsp=new Wsp();
-        await wsp.deleteIntance(this.id);
-        return true;
-    }
-
     async stopInstance(){
         if(this.session=='connect' || this.session=='pending'){
             await this.client.destroy();

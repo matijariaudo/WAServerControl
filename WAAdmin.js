@@ -11,8 +11,8 @@ const InitWA=async()=>{
     for (let i = 0; i < qty; i++) {
         //eliminarCarpeta('/.wwebjs_auth/session-'+i)
         const wsp=new Wsp();
-        wsp.createInstance(i);
-        await wait(process.env.TIMEBTW || 30000);
+        await wsp.createInstance(i);
+        //await wait(process.env.TIMEBTW || 30000);
     }
 }
 

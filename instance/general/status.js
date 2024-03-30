@@ -31,12 +31,4 @@ const deleteInstance=async(req,res)=>{
     return res.status(200).json({status:"The instance has been deleted."})
 }
 
-const forceDeleteInstance=async(req,res)=>{
-    const wsp=new Wsp();
-    const {instanceId}=req.body;
-    let instance=await wsp.getInstance(instanceId)
-    const deleteIns = await instance.forceDestroyInstance();
-    if(!deleteIns){return res.status(200).json({error:"No se pudo detener, intente nuevamente"})}
-    return res.status(200).json({status:"The instance has been deleted."})
-}
-export {getInfoInstances,stopInstance,deleteInstance,forceDeleteInstance,createInstance}
+export {getInfoInstances,stopInstance,deleteInstance,createInstance}
