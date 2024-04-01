@@ -87,8 +87,9 @@
         function crearGrafico()
         {   $("#chart").html(`<canvas id="myChart"></canvas>`)
             qty=$("#nro").val()*$("#unidad").val()
+            url=window.location.href.indexOf("localhost")?"http://54.147.241.85":"";
             var settings = {
-            "url": "/api/control/cpu",
+            "url": url+"/api/control/cpu",
             "method": "POST",
             "timeout": 0,
             "headers": {
@@ -120,10 +121,10 @@
             // Calcula el promedio dividiendo la suma total por el número de elementos en el array
             return suma / array.length;
         }
-
         status();
         function status()
-        {   var settings = {
+        {   
+            var settings = {
             "url": "/api/instances/info",
             "method": "POST",
             "timeout": 0,

@@ -3,6 +3,9 @@ const { LocalAuth,Client } = pkg;
 
 //const Phone=require('./phone');
 import fsExtra from 'fs-extra'
+import fs from 'fs'
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 class Instances{
     constructor(id){
@@ -51,18 +54,24 @@ class Instances{
             this.client.on('message', message => {
                 //console.log("+"+message.from.split("@")[0],message.body);
             });
-            await this.client.initialize();
-            resolve(true);
+            try {
+                await this.client.initialize();
+                resolve(true);
+            } catch (error) {
+                this.destroyInstance(true)
+                reject(true);    
+            }
+            
         });
     }
 
-    async destroyInstance(){
+    async destroyInstance(accion=false){
         console.log("eliminar instancia")
         if(this.session=='connect'){
             await this.client.logout();
-        }
-        if(this.session=='connect' || this.session=='pending'){
             await this.client.destroy();
+        }
+        if(this.session=='connect' || this.session=='pending' || accion){
             this.session="disconnect";
             this.qr="";
             const wsp=new Wsp();
@@ -169,7 +178,7 @@ class Wsp {
     async deleteIntance(id,deleteCookies=true){
         delete this.instancias[id]
         if(deleteCookies){
-            console.log("Delete instance data: ",id)
+            console.log("Delete instance data: ",id);
             fsExtra.remove('./.wwebjs_auth/session-'+id);
         }
         console.log("Deleted instance: ",id)
@@ -187,4 +196,20 @@ class Wsp {
 
 export {Wsp}
 
+
+function eliminarCarpeta(ubicacionCarpeta) {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+        
+    const rutaCarpetaAEliminar = path.join(__dirname , ubicacionCarpeta);
+
+    console.log(rutaCarpetaAEliminar)
+    // Verificar si la carpeta existe
+    if (fs.existsSync(rutaCarpetaAEliminar)) {
+        // Si la carpeta existe, eliminarla recursivamente
+        fs.rmSync(rutaCarpetaAEliminar, { recursive: true });
+        console.log(`Carpeta ${ubicacionCarpeta} eliminada.`);
+    } else {
+        console.log(`La carpeta ${ubicacionCarpeta} no existe en ${rutaCarpetaAEliminar}`);
+    }
+}
 

@@ -9,7 +9,12 @@ const getInfoInstances=async(req,res)=>{
 const createInstance=async(req,res)=>{
     const {instanceId}=req.body;
     const wsp=new Wsp();
-    const instance = await wsp.createInstance(instanceId);
+    let instance;
+    try {
+        instance = await wsp.createInstance(instanceId);
+    } catch (error) {
+        return res.status(200).json({error:"No se ha podido crear"})
+    }
     const data=instance.getProp();
     return res.status(200).json({status:"The instance has been stopped.",data})
 }
@@ -26,6 +31,7 @@ const deleteInstance=async(req,res)=>{
     const wsp=new Wsp();
     const {instanceId}=req.body;
     let instance=await wsp.getInstance(instanceId)
+    if(!instance){return res.status(200).json({error:"No se encontró la instancia"})}
     const deleteIns = await instance.destroyInstance();
     if(!deleteIns){return res.status(200).json({error:"No se pudo detener, intente nuevamente"})}
     return res.status(200).json({status:"The instance has been deleted."})
