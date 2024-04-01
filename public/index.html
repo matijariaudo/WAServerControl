@@ -29,10 +29,12 @@
         }
         .qr_div{
             width: 260px;
-            height: 260px;
+            height: 320px;
             float: left;
             color: #FFF;
             font-family: 'Courier New', Courier, monospace;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 0, 0, 0);
         }
     </style>
 </head>
@@ -137,33 +139,34 @@
                 const data=response.info;
                 console.log(data);
                 data.forEach((e,i)=> {
-                    $("#qr").append(`<div class="qr_div" id="qr_${i}"><p style='margin:0px'>Instancia ${i}</p></div>`)
+                    $("#qr").append(`<div class="qr_div" id="qr_div_${i}"><div  id="qr_${i}" style='border-radius:10px'></div></div>`)
                     if(e.qr!=""){
-                    printQr(e.qr,`qr_${i}`)
-                    }else{
-                    $("#qr_"+i).append(`Status: ${e.session}<br>Numero:${e.phone.user || ' - '}`)        
+                    const qr=e.qr.substr(0,e.qr.length-2);
+                    printQr(qr,`qr_${i}`)
                     }
+                    $("#qr_div_"+i).prepend(`<p style='margin:0px'>Instancia ${i}</p>Status: ${e.session}<br>Numero:${e.phone.user || ' - '}`)        
+                    
                 });
             });
         }
 
         function printQr(txt,div){
             const qrCode = new QRCodeStyling({
-                width: 260,
+                width: 250,
                 height: 260,
                 type: "svg",
                 data: txt,
-                image: "https://static.vecteezy.com/system/resources/previews/012/162/809/non_2x/whatsapp-logo-3d-render-free-png.png",
+                image: "https://cdn-icons-png.flaticon.com/512/123/123741.png",
                 dotsOptions: {
-                    color: "#19BD3F",
+                    color: "#000",
                     type: "rounded"
                 },
                 backgroundOptions: {
-                    color: "rgb(55, 55, 55)",
+                    color: "#19BD3F",
                 },
                 imageOptions: {
                     crossOrigin: "anonymous",
-                    margin: 0
+                    margin: 2
                 }
             });
             qrCode.append(document.getElementById(div));
