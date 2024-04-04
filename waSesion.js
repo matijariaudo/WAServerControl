@@ -20,7 +20,18 @@ class Instances{
         console.log("Starting: "+this.id)
         return new Promise(async(resolve, reject) => {
             let primera=true;
-            this.client = new Client({authStrategy: new LocalAuth({ clientId: this.id }), puppeteer: {headless: true,args: ['--no-sandbox', '--disable-setuid-sandbox'],ignoreHTTPSErrors: true,defaultViewport: { width: 800, height: 600 }}});
+            this.client = new Client({authStrategy: new LocalAuth({ clientId: this.id }), puppeteer: {headless: true,
+                args: [            
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--unhandled-rejections=strict',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--no-first-run',
+                '--no-zygote',
+                '--single-process',
+                '--disable-gpu'],
+                ignoreHTTPSErrors: true,defaultViewport: { width: 800, height: 600 }}});
             this.client.on('qr', async(qr) => {
                 this.qr=qr;
                 this.session="pending";
@@ -45,7 +56,7 @@ class Instances{
             this.client.on('disconnected', async(r) => {
                 primera=false;console.log("Issue: "+this.id);
                 try {
-                    this.destroyInstance();                
+                    //this.destroyInstance();                
                 } catch (error) {
                     console.error("Error al ejecutar destroyInstance():", error);
                     // Puedes agregar cualquier manejo adicional de errores aquí
@@ -58,7 +69,7 @@ class Instances{
                 await this.client.initialize();
                 resolve(true);
             } catch (error) {
-                this.destroyInstance(true)
+                //this.destroyInstance(true)
                 reject(true);    
             }
             
